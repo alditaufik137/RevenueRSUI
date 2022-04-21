@@ -5,7 +5,7 @@ const AccruePendapatan = require("./api/AccruePendapatan/routes");
 const PendapatanRawatJalan = require("./api/PendapatanRawatJalan/routes");
 const PiutangArBilled = require("./api/PiutangArBilled/routes");
 
-
+app.use(bodyParser.urlencoded({ extended: true }))
 
 
 app.listen(3000, () => {
