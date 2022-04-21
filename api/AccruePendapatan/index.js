@@ -1,29 +1,86 @@
-const express = require('express')
+const express = require("express");
 const app = express();
+const cors = require("cors");
 const pool = require("./db");
 
-app.use(express.json()) // -> req.body
+//middleware
+
+app.use(cors());
+app.use(express.json());
 
 //ROUTES//
 
-//get all todos
+//create rsui//
 
-//get todo
+app.post("/rsui", async (req, res) => {
+  try {
+    const { description } = req.body;
+    const newRsui = await pool.query("INSERT INTO general_ledger (description) VALUES($1) RETURNING *", [description]);
 
-//create a todo
-app.post("/todos", async(req, res) =>{
-    try{
-        //await
-        console.log(req.body);
-    } catch(err){
-        console.error(err.message);
+    res.json(newRsui);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+
+// get all rsui
+
+app.get("/rsui", async(req, res) =>{
+    try{ 
+        const allRsui = await pool.query('select * from general_ledger');
+        res.json(allRsui.rows)
+    } catch (err) {
+        console.error(err.message)
     }
 })
-//update a todo
 
-//delete a todo
+
+// get a general_ledger
+
+app.get("/rsui/:id", async(req,res) =>{
+    try {
+        const { id } = req.params;
+        const general_ledger = await pool.query ("SELECT * FROM rsui WHERE id = $1", [id]);
+
+        res.json(general_ledger.rows[0]);
+    } catch (err) {
+        console.error(err.message)
+    }
+})
+
+//update a general_ledger
+
+app.put("/rsui/:id", async(req,res) =>{
+    try {
+        const { id } = req.params;
+        const { description } = req.body;
+        const updateRsui = await pool.query(
+            "UPDATE rsui SET description = $1 WHERE id = $2 ",
+            [description,id]
+        );
+
+        res.json(general_ledger.rows[0]);
+    } catch (err) {
+        console.error(err.message)
+    }
+})
+
+//delete a todo 
+app.delete("/rsui/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deleteRsui = await pool.query("DELETE FROM general_ledger WHERE id = $1", [
+        id
+      ]);
+      res.json("general_ledger was deleted!");
+    } catch (err) {
+      console.log(err.message);
+    }
+  });
+
 
 
 app.listen(3000, () => {
-    console.log("server is listening o port 3000")
-})
+  console.log("server is listening on port 3000");
+});
