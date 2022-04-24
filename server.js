@@ -1,13 +1,21 @@
-const express = require('express')
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 const app = express();
-const pool = require("./db");
-const AccruePendapatan = require("./api/AccruePendapatan/routes");
-const PendapatanRawatJalan = require("./api/PendapatanRawatJalan/routes");
-const PiutangArBilled = require("./api/PiutangArBilled/routes");
-
-app.use(bodyParser.urlencoded({ extended: true }))
-
-
-app.listen(3000, () => {
-  console.log("server is listening o port 3000")
-})
+var corsOptions = {
+  origin: "*"
+};
+app.use(cors(corsOptions));
+// parse requests of content-type - application/json
+app.use(bodyParser.json());
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
+// simple route
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to RSUI application." });
+});
+// set port, listen for requests
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});
